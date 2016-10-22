@@ -1,0 +1,515 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\linespread{1.5}
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{float}
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage[ comma, sort&compress]{natbib}
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{amsmath}
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+\usepackage{bm}
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\bfseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+
+\title{ECON 706 - Problem Set 2}
+\author{Andr\'e Victor D. Luduvice, Stefano Pietrosanti and Joseph Silverstein}
+
+\maketitle
+
+\begin{abstract}
+In this article we study the behavior of housing Completions and Starts in the frequency domain. To investigate the underlying cyclical behavior of housing starts and completions, we use parametric and nonparametric techniques to conduct detailed spectral analyses of the series in the univariate and multivariate cases. We also perform an analysis for the non-seasonally-adjusted series of Completions. Our overall results show, for the univariate case, a strong bimonthly cyclical components for both series alongside with the non-seasonally adjusted counterpart of Completions. The multivariate case results show that cycles of an year and more are highly correlated between the two series. Moreover, the long cycles of the one-lag difference in Starts lead the long cycles of the difference in Completions.
+
+\end{abstract}
+
+\section{Introduction}
+
+We conduct a frequency domain analysis, analogous to the time domain analysis we conducted in Problem Set 1. We again work with the Federal Reserve Bank of St. Louis data set, \citep{dataset}, which uses the results of the US Census.
+
+The time series under study collects 45 years plus one month of monthly observation of housing starts and completions, from January 1970 to January 2015, for a total of 541 observations.
+
+This article is organized as follows: in the next section, we discuss the population methodology of spectral analysis that is the theoretical basis of the article. In the third section, we conduct an univariate spectral analysis subdivided by methods of estimation, both parametric and nonparametric, of the seasonally adjusted series. In Section 4, we perform the same thorough spectral analysis but for the non-seasonally adjusted Completion series. Section 5 works through the multivariate counterpart characterizing the cross-spectrum in its different components. Finally, the last section concludes our study.
+
+
+\section{Methodology}
+
+The goal of spectral analysis is to understand the variability of a stochastic process over the frequencies rather than over the time domain. This means to look at the periodogram instead of investigating the autocorrelations. Thus changing perspective, we try to observe the Time$\;\times\;$Level space as filled by many possible wave (sine-cosine) functions, each for a different frequency.
+
+E.g., we can take a cosine function, and think to have a finite series of length $T$ - this only for the present paragraph, for clarity sake. The $cos(u)$ function is defined over the $[0,2\pi]$ space (actually, it is defined over $[-\pi,\pi]$, but being symmetric we can lightheartedly shift to the positive radiants). We observe the $u$ unit over the circle in the following way: $u(\omega, t)=2\pi*\frac{k}{T}*t$, where $T$ is the total of our time observations; $t$ is specific time point; $k$ the number of cycles our wave completes in the time span we observe; hence, $\omega_k=\frac{2\pi*k}{T}$.  We have thus restated the wave function on the Time-Value space, where the measure $2\pi$ over the circle is mapped (if possible) to the $t=\frac{T}{k}$ data point, and so on and so forth\footnote{
+Hence moving to an infinite sample makes what above imprecise, yet not the intuition. With an infinite sample we can in principle observe an infinite number of cycles.}.
+
+As we do this, we consider (loosely following \citet{hammy}, as in all other comments) data points as $x_t$, from the generic {\bf stationary} time series $\{x_t\}_t$, as the result of the composition of these different sine and cosine waves at different frequencies. 
+
+\begin{equation}
+\begin{aligned}
+x_t=\sum_k(a_k*\text{sin}(\omega_k*t)+b_k*\text{cos}(\omega_k*t))
+\end{aligned}
+\end{equation}
+
+We can recognize something similar to a linear regression. By ``similar'' we mean that we can estimate this as an actual linear regression with perfect fit (why perfect fit is explained in the footnote n.2) considering $a_k\,,\,b_k$ as coefficients. Yet, as long as we stay on theoretical ground, we must state that these coefficients are zero mean, equal variance ($\sigma_k^2$), serially and mutually uncorrelated random variables. As in the regression framework, some $k$ indexed explanatories will be more important and other less\footnote{
+When working with an actual sample of $T$ observations, the maximum possible $k$ is $\frac{T}{2}$. This since, with $T$ observation, we can have at most $T$ explanatories; each $k$ brings with itself a sine and a cosine explanatory both, hence we can at most have $T$ over a half $k$s, and perfect fit. Since we want to check for the contribution of all possible frequencies, we sum over $k\in\left\{0,\frac{T}{2}\right\}$, and we go for the perfect fit.}. To measure this importance, we can ask ourselves the classical ANOVA question: ``how much this component helps explaining the total variability?". In order to answer such question we can observe that\footnote{We assume that $x_t$ is mean zero.}
+
+\begin{equation}
+\begin{aligned}
+E[x_t^2]=\gamma(0)&=\sum_k(E[a_k^2]*\text{sin}(\omega_k*t)^2+E[b_k^2]*\text{cos}(\omega_k*t)^2)=\\
+&=\sum_k\,\sigma_k^2
+\end{aligned}
+\end{equation}
+
+We also know that $\gamma(0)$ is just one instance of the autocovariance function, which we can recast completely on the frequency domain using the autocovariance generating function. For each frequency $\omega$ we have:
+
+\begin{equation}
+g_X=\sum\limits_{t=-\infty}^{\infty} \gamma(t)z^t \\
+\end{equation}evaluating on over the unit circle, hence $z=e^{-i\omega}$, and rescaling w.r.t. $2\pi$ we get
+
+\begin{equation}
+\begin{aligned}
+s_X(\omega)&=\sum\limits_{t=-\infty}^{\infty} \frac{1}{2\pi} \gamma(t)e^{-i\omega t}=\\
+&=\frac{1}{2\pi}\left[\gamma(0)+2\sum\limits_{t=-\infty}^{\infty} \gamma(t)\text{cos}(\omega t)\right]
+\end{aligned}
+\end{equation}
+
+Where the last passage follows from the basic trigonometric identities and from symmetry of the involved functions around zero. This last function is the population spectrum, a continuous, real valued function of the continuous frequency variable. Given that the Fourier transformation can be inverted, from the population spectrum we can recover frequencies as follows:
+
+\begin{equation}
+\begin{aligned}
+\int_{-\pi}^{\pi} s_x(\omega)e^{-i\omega t}d\omega=\gamma(t)
+\end{aligned}
+\end{equation}and the fact that the autocovariance of our stationary process is the integral of the spectrum over the frequencies for $t=0$ follows. We can appreciate how this works very smoothly as long as we have infinitely many autocovariances. In a sample, with $T-1$ proper (not at lag 0) autocovariances, we will need to be careful. What follows is the tale of this carefulness. 
+
+
+\section{Univariate Analysis}
+
+Here we are only interested in the study of the individual cyclical behavior of our series. A first and rough approach is to simply plot the raw Periodgram of our series. In order to do this, we must work with stationary series, otherwise the methods showed cannot help us. Since our series are non-stationary (we know this from the previous assignment), we take first differences in order to get stationarity back, and we perform our analysis on these first differences\footnote{From now on, if not stated otherwise, only differences will be considered. It will happen, though that we refer to the series under investigation barely as ``Starts'' and ``Completions''; when we do this, it is only not to continuously repeat ``difference in'' across the whole text.}.
+
+Though this estimator is unbiased, it is ridden with problems: first, a very large confidence interval that does not shrink with the increase in the number of data points considered (no consistency). We can think about this in the sine/cosine regression framework we stated in the introduction: as soon as we add new data to our sample, we can investigate new frequencies, hence we must add explanatories to our perfect fit regressions.  The result is that - as the sample increases - we do not collect more information about the same parameters, but we add parameters instead.
+
+The second problem is that, when observing a cluster of peaks in the sample raw spectrum, we are not totally sure about the ``importance ranking'' of the frequencies which correspond to these peaks. One (but not the only) source of such a problem is the fact that the shift to frequency domain from time domain is a shift to a continuous space from a discrete space. If we have finitely many discrete data points, we must take into account a lot of imprecision. This imprecision is due to the fact that, of the whole frequency line, we will only be able to consider the finitely many points spanned by $k$: $\frac{2\pi k}{T}\;,\;k\in\left\{0,....,\frac{T-1}{2}\right\}$. Formally, the raw estimate is:
+
+\begin{equation}
+\begin{aligned}
+\hat{s}_x(\omega)=\sum\limits_{t=-T+1}^{T-1} \frac{1}{2\pi} \gamma(t)e^{-i\omega t}=\\
+=\frac{1}{2\pi}\left[\gamma(0)+2\sum\limits_{t=1}^{T-1} \gamma(t)\text{cos}(\omega t)\right]
+\end{aligned}
+\end{equation}
+
+The underlying difficulty becomes clearer as soon as we think of the theoretical Periodgram, where we account for contributions to the variance by {\em ranges} of $\omega$s. This contribution is described by the area encompassed by the spectral density curve. What we are doing is summarizing said contribution over ranges of frequencies through finitely many frequencies.
+
+The result is spiky and irregular (high - and irreducible - variance). Since this estimation is unbiased, though, it is a useful instrument to identify important ranges of frequencies, so to provide a ``reality check'' for our more sophisticated, consistent, yet often biased, estimation methods. 
+
+Before showing the plots, a brief preliminary account about how we think about it. On the ordinate axis, we show the values of the estimated spectral densities, which - as for every density function - are arbitrary, such that the only relevant information conveyed is the relative magnitude. We look for peaks, for relatively high-weight (density) frequencies, since we are interested in the frequencies which are the most important for variance decomposition. On the abscissae axis, we instead plot the frequencies. 
+
+Yet the number of cycles our waves can perform, $k$,  is constrained. Given that we are dealing with monthly observations, $T$ is the total number of monthly points constituting our series. Hence, the maximal number of cycles our explanatory wave functions can accomplish, over the $T=541$ periods we take into account, is $\frac{540}{2}$\footnote{Since we cannot show ``half-data ponts'', we solve the problem removing one observation, as in \citet{hammy}.}. This is a bimonthly frequency: the fastest wave we can consider completes six cycles each year. Thus we can at most account for this frequency, and we describe the line from zero to the bimonthly frequency by discrete (though little) jumps.
+
+Consequently, setting 
+\begin{verbatim}
+freq=12
+\end{verbatim} 
+in the ``ts'' command, the Periodgram of any time series in our analysis will show 6 as maximum abscissa. This since the usage of that specification in the ``ts'' command drives R to see frequencies as cycles per year. When commenting graphs we will use the word frequency in this sense.
+This said, the plots follow:
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.55]{rawspecstart}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.55]{rawspeccomp}
+\caption{}
+\end{center}
+\end{figure}
+
+
+As we can see, our series spectra are mostly coherent in shape, showing:
+
+\begin{enumerate}
+\item A low frequency component, which almost does not cycle, and hence has frequency concentrated near zero.
+\item A group of spikes, located within the bi-quarterly and quarterly zone.
+\item A very relevant (approximately) bi-monthly component, from which the most of the variability seems to be caused.
+\end{enumerate}
+
+Now we proceed improving our estimates through Non-Parametric and Parametric methods.
+
+\subsection{Non-parametric Estimation}
+
+Since the two main problems with the raw Periodogram are the improper concentration of spectral weight on single frequency points, and the inconsistent nature of the raw Periodogram as an estimator, it would be nice to have a solution for both. Fortunately this solution is there, is unique, and addresses both problems. In plain words, only looking at the estimate we previously had (non-parametric), we will smooth them in a ``clever'' way, diminishing the variance (redistributing the concentrated weight) and getting back consistency.   This, since the smoothing happens over fixed intervals, hence the increase in the number of data will give us again more informations about what we are estimating.
+
+Formally, $j$ being $\frac{k}{T}$, we use a $K(\omega_{j+m},\omega_j)$ (the {\em kernel}) weighting function\footnote{
+In the sense that for each $h$, $\sum_{m=-h}^{h}K(\omega_{j+m},\omega_j)=1$.}, and we compute the estimates of the Periodogram on the base of the raw estimates:
+
+\begin{equation}
+\hat{s}_X=\sum\limits_{m=-h}^{h} K(\omega_{j+m},\omega_j)\hat{s}_x(\omega_j)
+\end{equation}where the $h$ is the bandwidth, i.e. how many raw correlation data points we exploit to estimate each element of our final approximation of the Periodogram\footnote{In the empirical analysis we define the bandwidth slightly differently: as $\frac{2h+1}{T}$, the total portion of disposable points we use for each estimate.}. 
+
+This mitigate our two main problems. On one hand, the fixed nature of the bandwidth allows us to regain consistency: as we increase the number of data points, more of them will fall into the bandwidth, so we go back to a world in which more data means more information; on the other hand, redistributing the weights, we curb the wild behavior of the raw Periodgram, so to better grasp the contribution of {\em ranges} of frequencies to the variance. However, this procedure is biased by nature: if we smooth a previously unbiased estimate, and then we take again the average of the smoothed values, the result will be different from the previous average (which was unbiased). Hence we have a bias-variance trade off.
+ 
+\subsubsection{Spectral Window}
+
+Since we only have the  $j=\frac{k}{T}$ frequencies at our disposal, in deciding the bandwidth we are deciding how many of these actually enter our smoothing procedure. This reasoning is at the base of the spectral window estimation method, in particular, we employ the Daniell's kernel. 
+
+This last is simply a centered moving average. To let the weight concentrate on the very central value - and decrease linearly outside - we can apply the kernel multiple times (convoluting the kernel). In such case, the bandwidth of the resulting kernel (the convolution of the kernels considered as a single kernel) will be $\frac{n*h+1}{T}$\footnote{
+Indeed, since in our final choice we opt for a two step convolution of the kernel, we have a bandwidth of $\frac{4*h+1}{T}$.}.
+
+To do an actual example, let say we want the Spectral Window estimate of the Population Spectrum at the frequency $\omega_j$, $\hat{s}_X(\omega_j)$, and we have the raw Periodogram estimate $\hat{s}_x(\omega_i)$ for $i\in\left\{0,...,\frac{T-1}{2}\right\}$ at our disposal. To keep it easy, say we choose a bandwidth parameter equal to 1, and we apply it twice. This translates in the following mathematics:
+
+\begin{equation}
+\hat{s}_{X,1}(\omega_j)=\frac{\hat{s}_x(\omega_{j-1})+\hat{s}_x(\omega_j)+\hat{s}_x(\omega_{j+1})}{3}
+\end{equation} then we apply the same kernel again and we get
+
+\begin{equation}
+\hat{s}_{X,2}(\omega_j)=\frac{\hat{s}_x(\omega_{j-2})+\hat{s}_x(\omega_{j+2})}{9}+\frac{2(\hat{s}_x(\omega_{j-1})+\hat{s}_x(\omega_{j+1}))}{9}+\frac{\hat{s}_x(\omega_j)}{3}
+\end{equation}
+
+The objective in this is to find the ``best'' way to smooth, hence the best bandwidth parameter. We do this {\em via} sheer comparison of the result of the application of different bandwidth parameters for both the applications of the kernel\footnote{We can apply, say, $h=6$ the first time and $h=3$ the second time. Actually, we choose for $8,8$ for Start and $7,7$ for completions.}.
+
+To do this we cycle through the bandwidth parameters for both the passages of the kernel. The nested loop computes the estimate for each couple of bandwidth parameters, and plot it along with the parametric estimate (to be commented later) and the raw estimate. 
+
+I below show two extreme choices and the actual result for the Starts series(first the two extremes, then the result).
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.4]{spec33}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.4]{spec1010}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{spec88}
+\caption{}
+\end{center}
+\end{figure}
+
+As we can see, the graph for bandwidth $\frac{4*3+1}{540}=0.0241$ (lowest bandwidth considered for two passages) does not perform properly in its smoothing task. On the other hand, the $\frac{4*10+1}{540}=0.0759$ (looking at the raw estimation) is clearly biased, since it is over-smoothed, which results in a possible misestimation of the autocovariance of the sample at lag 0. Finally, the $\frac{4*8+1}{540}=0.0611$ accomplishes the smoothing purpose without exceeding in it. So we settle on this choice.
+
+The Completion final result follow, where the selection logic is the same.
+ 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{spec77}
+\caption{}
+\end{center}
+\end{figure}
+
+As a general comment, we can see how both series seem to have at least five important components: a low frequency component that is almost not ``cycling''; a relatively slow component cycling over 12 months periods; an almost bi-quarterly component; an almost quarterly component; finally, an almost bimonthly component from which the most of the data variation seems to generate.
+
+\subsubsection{Lag Window}
+
+The lag window differs from the spectral window with respect to the intuition and the type of kernel involved, yet the result is not this remarkably different - as we shall see.
+
+First the intuition. The main choice we had to perform with respect to the spectral window estimator was about over how many raw Periodogram point estimates we were going to smooth. That is, over how many frequencies on the abscissae. 
+
+For the lag window, we approach the issue from the autocorrelation perspective for each frequency. We use the Bartlett kernel, defined as
+
+\begin{equation}
+\kappa_j^*= \begin{cases}
+     1-\frac{t}{q+1}  &: \text{if $t\in\left\{1,...,q\right\}$}\\
+     0 &  \text{otherwise}   
+\end{cases}
+\end{equation}
+
+We apply it, in combination with the sample autocovariances, in the following way:
+
+\begin{equation}
+\begin{aligned}
+\hat{s}_X(\omega)=\frac{1}{2\pi}\left[\hat{\gamma}(0)+2\sum\limits_{t=1}^{q}\left( 1-\frac{t}{q+1}\right) \hat{\gamma}(t)\text{cos}(\omega t)\right]
+\end{aligned}
+\end{equation}
+
+Then, by choosing $q$, we choose how many sample autocovariances we use in our estimation, as if there was some underlying finite MA process involved. After a similar inspection procedure as the one employed for the spectral window, we conclude that the best lag is $q=25$ for the Starts series and $30$ for the Completion series. Given the similarity in the selection procedure with the one of the previous section, we just show the final result in the following plots:
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{lagstart}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{lagcomp}
+\caption{}
+\end{center}
+\end{figure}
+
+The comment closely parallels the one for the Spectral Window estimation, so we do not repeat it.
+
+\subsection{Parametric - Autoregressive Spectral Density Estimation}
+
+A possible way to solve our estimation problem is, given the close relationship between spectral density and variance of a stochastic process, to exploit its underlying autoregressive structure to recover the spectral density. 
+
+This procedure's underlying logic is\footnote{In the following I am using capital letters for the population, and non-labelled variables (as $\sigma$, the error's std deviation) for error related quantities.}: 
+
+Assume we know our generating process has a stationary, $\text{MA}(\infty)$ nature\footnote{
+And we do: the time domain analysis showed how and $\text{ARIMA}(1,1,2)$ was a good approximation of both of the time series, so we have good evidence in favor of an $\text{MA}(\infty)$ of some sort generating the series of the {\em differences} in houses starts and completions.}. Then we know about the existence of an appropriate $\psi(\text{L})$ polynomial that describes this $\text{MA}(\infty)$ process, which means we can refer to the following autocovariance generating function:
+
+\begin{equation}
+\begin{aligned}
+g_X(z)=\sigma^2\psi(z)\psi(z^{-1})
+\end{aligned}
+\end{equation}
+
+We can then evaluate this expression on the unit circle, which means at $z=e^i\omega$, and then divide everything times the circumference of the unit circle ($2\pi$). We thus get:
+
+\begin{equation}
+\begin{aligned}
+s_X(\omega)=\frac{\sigma^2\psi(e^{i\omega})\psi(e^{-i\omega})}{2\pi}
+\end{aligned}
+\end{equation}
+
+To have a practical example, say we have an $\text{AR(1)}$, whose related filter is $\psi(L)=\frac{1}{1-\phi L}$, then, its population spectrum is:
+
+\begin{equation}
+\begin{aligned}
+s_X(\omega)=\frac{\sigma^2}{2\pi(1-\phi e^{i\omega})(1-\phi e^{-i\omega})}=\\
+=\frac{\sigma^2}{2\pi(1+\phi^2-2\phi\text{cos}(\omega))}
+\end{aligned}
+\end{equation}
+
+where the last passage exploits Euler equation\footnote{
+Feynman's beloved $e^{i\omega}=\text{cos}(\omega)-i\text{sin}(\omega)$}.
+
+To do this in R, we exploit the \emph{spec.ar} command, which fits an AR model to our sample with the help of the AIC, and then recovers the $\hat{\phi}$'s, so to empirically compute the spectral density over the frequency domain\footnote{Here we must recognize that we are using a command that only allows for AR, and not MA, specification. It turns out that this is the most convenient way to handle the estimation given our sample. Tough we are allowing for a plethoric AR specification, we do this in the spirit of \citet[p.165]{hammy}: ``Even if the model is incorrectly specified, if the autocovariances of the true process are reasonably close to those for an ARMA(p,q) specification, this procedure should provide a useful estimate of the population spectrum''. For we have good evidence in favor of assuming an MA($\infty$) generating process - and not, say, a finite order MA -  we count on that ``reasonable closeness''.}. What we show in the following graph is the plot of the spectral density of the estimated model, obtained through the variance generating function.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.55]{specarstart}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.55]{specarcomp}
+\caption{}
+\end{center}
+\end{figure}
+
+As we can see, also under AR specification we get similar results. Yet here the peaks and valley stand out more decisively, suggesting that we reduced the bias.
+
+\section{Univariate Analysis - Non-seasonally-adjusted}
+
+We now analyse the non-seasonally adjusted Completions series. The choice of this series is motivated by the fact that in the last problem set we have assessed that, among the two, it is the most well-behaved for time domain estimations. The following graphs plot the series for the whole sample and also for a short window of the years 2012-2014. In the latter, we can see clear the seasonal component within each year. 
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.55]{compNSA}
+\caption{}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.55]{compNSAwindow}
+\caption{}
+\end{center}
+\end{figure}
+
+As noted previously, the Completions seasonally-adjusted series is non-stationary and therefore we take a one-lag difference to correct it. 
+
+For the sake of completeness\footnote{Since we did not analyze the non seasonally adjusted series in the previous problem set.}, we have also tested non stationarity of the non seasonally adjusted series via the Augmented Dickey-Fuller (ADF) test, with and without drift, using both the AIC and BIC criteria. We could not reject the hypothesis of non-stationarity of the series on a 10\% significance level for all of them. We have thus taken the first difference of the said series and performed the same ADF tests, obtaining a strong rejection of the null-hypothesis for both the series. We omit showing the outputs of the tests as it is straightforward to obtain them from the code.
+
+ Hence, all our analysis is done over the first difference of the series in the same way of the previous section.
+
+The plot below shows the raw Periodogram of the series. 
+
+\newpage
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.55]{speccompNSA}
+\caption{}
+\end{center}
+\end{figure}
+
+
+The first thing that stands out is that the series has many peaks, spreading through the harmonics of a 12 months period. This shape follows closely what characterizes the ``Granger's Typical Spectral Shape of an Economic Variable'' \citep{granger66} with the difference that the peaks do not decrease on magnitude at higher frequencies. 
+
+The highest peak of the plot is on the bimonthly cycle showing its strong relative importance over the Periodogram. This stands in accordance to all the analysis done with respect to the seasonally adjusted counterpart. The other two outstanding peaks are, respectively on magnitude order, the quarterly and yearly component. The peak on the quarterly component shows that the series carries an intense effect of an year's seasons. The peak on the number 1 of the ordinate axis, i.e., the 12 months cycle component, shows the true seasonal component of the series in which house completions cycles repeat itself year after year. Comparing with the Periodogram of its seasonally-adjusted counterpart, it is clear that all those harmonic components where eliminated in the seasonal filtering applied in \cite{dataset}.
+
+
+\subsection{Nonparametric Estimation}
+
+\subsubsection{Spectral Window}
+
+We proceed with the spectral window estimation using the same methodology of the previous section. We use two passes of the Daniell's kernel obtaining a triangular weighting. This filter is specially appealing to the non-seasonally-adjusted series as the relevant frequency components are just the ones in which we have the peaks discussed before. As we shall see, the result is going to be very satisfactory under the Variance-Bias trade-off perspective. 
+
+The graph below shows our chosen approximation. After the repetition of many iterations of different bandwidth parameters, we select $h=2$ yielding us a window bandwidth of $\frac{4*2+1}{540} = 0.0167$. The selection criterion was, as before, inspection and comparison with the raw Periodogram. Fortunately, despite the rather narrow bandwidth, we preserve the positioning and magnitude order of all important peaks previously identified, as well as smooth lower values.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{spec22}
+\caption{}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Lag Window}
+
+The lag window estimation is, once again, conducted using the Bartlett kernel. We smooth the Periodogram by choosing the truncation on lag $q$ of the autocovariance function. After repeating the computational cycle truncating from $q=20$ until $q=110$ we observe that above the 70th lag our estimation begins to assume the desired behavior replicating the peaks of the Periodogram. We then choose $q=75$ in order to augmented precision while preserving parsimony of the number of lags.
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{lagcompNSA}
+\caption{}
+\end{center}
+\end{figure}
+
+
+\subsection{Parametric - Autoregressive Spectral Density Estimation}
+
+Our parametric estimation with the R function \emph{spec.ar} selects an AR(25) through the AIC criterion and yields the following spectral density:
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{specarcompNSA}
+\caption{}
+\end{center}
+\end{figure}
+
+The estimation preserves the peaks in the harmonic components of the 12 months period observed in the raw periodogoram. The bimonthly importance is well-represented as well as the other minor components at the 2, 3 and 5 in the ordinate axis.  However, the magnitude of yearly cycle is heavily emphasized, exceeding the one of the quarterly cycle and achieving the same relevance of the bimonthly cycle. This is a unexpected result and goes in the contrary direction of all the intuition previously discussed.
+
+\subsection{Comparison with the Seasonally-adjusted}
+
+As a closure to this section, we compare the results obtained for both the seasonally (SA) and the non-seasonally-adjusted (NSA) Completions series. The first clear characteristic is that, despite seasonal adjustment is performed, the series bimonthly component remains strong in the estimated spectral density. The second one is that, after the seasonal filtering is applied, the yearly component, the second highest in relevance in the NSA, is sharply reduced. Those are results present in all the analyses of the different Periodgram estimation outcomes.
+
+Regarding our estimates, we can see that our choices of bandwidths and lag windows are directed by the stark differences in the Periodograms. For the seasonally-adjusted, we see clustering of peaks in high frequencies, such as the quarterly and the bimonthly, while for the NSA we observe sharp peaks in all the harmonics of the 12 months period. Therefore, for the NSA, we have chosen a narrow bandwidth and a large lag window as our smoothing could not rule out the high peaks at each cycle. On the other hand, for the SA series, a wider bandwidth was needed to bundle the peaks in the desired clusters on higher frequencies and, analogously, we were able to truncate the autocovariances in a smaller lag of the Bartlett lag-window estimation. The parametric analysis followed the necessity of more lags already observed in the lag-window for the NSA and thus we have estimated it under an AR(25) for the latter while with an AR(12) for the SA. However, the parametric estimate of the spectral density of the NSA is not as precise as the one of the SA and for the first we understand that the nonparametric smoothing is more suited for the analysis of the series. 
+
+\section{Multivariate Analysis}
+
+As in Problem Set 1, we perform VAR estimation on the differenced starts and completions series with a Cholesky ordering of differenced starts before differenced completions, using AIC to select VAR(14). We then use this fitted model to perform parametric vector autoregressive spectral density estimation.
+
+Denoting the differenced starts series by X and the differenced completions series by Y, our spectral density estimation procedure estimates the frequency domain equivalent\footnote{In the Fourier sense.} of an autocovariance matrix
+$$
+s_Y(\omega)=\left[
+            \begin{array}{ c c } 
+             s_{XX}(\omega) & s_{XY}(\omega) \\
+             s_{YX}(\omega) & s_{YY}(\omega)
+            \end{array} \right]
+$$
+
+$s_{yx}=\overline{s_{xy}}$ is the cross-spectrum, which is the estimated Fourier transform of the nondiagonal elements of the autocovariance matrix. This is actually the most interesting reason to perform the multivariate analysis, since it summarizes how the series move together in the frequency domain. Yet this information is not totally straightforward to recover: the cross-spectrum can have complex values.
+
+
+Indeed, we can decompose the cross-spectrum as follows: $s_{YX}(\omega)=c_{YX}(\omega)+i\cdot q_{YX}(\omega)$. We can then define the coherence 
+$$h_{YX}(\omega)=\frac{[c_{YX}(\omega)]^2+[q_{YX}(\omega)]^2}{s_{YY}(\omega)s_{XX}(\omega)}$$ 
+which, in loose terms, is the frequency domain equivalent of the correlation. If the coherence is high at a certain frequency $\omega$, it means that the wave components of our series move roughly together at that frequency. Furthermore, we can retrieve the phase 
+$$\theta=arctan(\frac{q_{YX}}{c_{YX}})$$.
+This last summarizes the leads and lags relationship between our variables. It is important because, if divided by the frequency, allows us to estimate by how many time periods the input variable\footnote{The one we put first in the Cholesky decomposition, which is Difference in Starts.} leads or lags the output variable.
+
+Before showing the plots, it is important to notice that, for what regard coherence we can directly draw conclusion regarding levels of the series looking at differences's results. The relation is not just in loose terms because we can rely on the results on the slides at page 63, 64 in \cite{dieb}.
+We plot the coherence spectrum below:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.55]{coherence_spectrum}
+\caption{}
+\end{center}
+\end{figure}
+
+The coherence is large at low frequencies, indicating that there is a considerable linear relationship between our differenced starts and differenced completions series at low frequencies. That is, changes in starts and changes in completions have important low frequency cycles in common.
+
+We now plot the phase spectrum:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.55]{phase_spectrum}
+\caption{}
+\end{center}
+\end{figure}
+
+We analyze the phase spectrum only at frequencies where the differenced starts and differenced completions are closely linearly related. At the lowest frequencies, where the coherence is highest (and thus the linear relationship is strongest), the phase spectrum is approximately linear with a positive slope. Since the Cholesky ordering of our VAR has differenced starts coming before differenced completions, the positive slope of the phase spectrum suggests that changes in starts lead changes in completions at low frequences. That is, differenced starts can be used to predict differenced completions at low frequencies. 
+
+We also plot the coherence vs. the phase shift (in months):
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.55]{coherence_phase_shift}
+\caption{}
+\end{center}
+\end{figure}
+
+This plot shows us by how many months the components at various frequencies of housing starts lead (or lag) the component of the housing completions series at the same frequency. For example, at a frequency of 1, this graph indicates that the yearly cyclical component of the differenced starts series leads the yearly cyclical component of the differenced completions series by slightly more than four months. The lead/lag relationship between the two series obtained from the phase diagram is only relevant at frequencies for which the coherence between the two series is high. Since the coherence between the two series is very low beyond a frequency of 1, we restrict our attention to the lower frequencies. Then we can conclude that the yearly cyclical component of housing starts predicts yearly housing completions cycles 4-6 months in the future.
+
+
+
+\section{Conclusion}
+
+In this article we have conducted a thorough spectral analysis of the Completions and Starts series each separately by themselves as well as in a multivariate environment. Our estimations were done both parametrically and nonparametrically. Also, the same study was applied to the non-seasonally-adjusted Completions.
+
+In the seasonally adjusted analysis we have smoothed the Periodogram with a Daniell kernel and obtained optimal bandwidth parameter $h=8$ for Starts and $h=7$ for Completions. For the non-seasonally-adjusted Completions, $h=2$ implied the best estimate. The smoothing by the Bartlett lag-window was done with a truncation on the autocovariances on the lag $q=25$ for Starts and $q=30$ for Completions, while for its NSA counterpart, $q=75$. Finally, the parametric estimation selected AR(p)'s with lags 13, 12 and 25 for the for Starts, Completions ans NSA Completions, respctively.
+
+The overall intuition provided by the estimations of the univariate spectral densities is that the series of differences in both Completions and Starts is characterized by a strong bimonthly cyclical component and by relatively less important lower frequency components. The NSA Completions also shows the same relevance for the bimonthly component alongside with strong cyclical components on the harmonics of 12 months, most notably the yearly component. Regarding the multivariate part, we could observe that the long cycles are highly correlated between the two series with the long cycles of Starts leading the long cycles of Completions by 4 to 6 months.
+
+
+\label{Bibliography}
+
+\bibliographystyle{jpe} 
+
+\bibliography{MyCollection}
+
+
+\end{document}

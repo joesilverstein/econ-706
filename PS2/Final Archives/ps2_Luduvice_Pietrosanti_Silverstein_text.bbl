@@ -1,0 +1,26 @@
+\begin{thebibliography}{4}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem[{Diebold(2015)}]{dieb}
+Diebold, Francis~X. 2015.
+\newblock \emph{Time Series Econometrics}.
+
+\bibitem[{FRED(2014)}]{dataset}
+FRED, Federal Reserve Bank of St. Louis from US Bureau of~Census. 2014.
+\newblock \enquote{US. Bureau of the Census, New Privately-Owned Housing Units,
+  Start and Completion.}
+
+\bibitem[{Granger(1966)}]{granger66}
+Granger, C. W.~J. 1966.
+\newblock \enquote{The Typical Spectral Shape of an Economic Variable.}
+\newblock \emph{Econometrica} 34~(1):150--161.
+
+\bibitem[{Hamilton(1994)}]{hammy}
+Hamilton, James~D. 1994.
+\newblock \emph{Time series analysis}.
+\newblock Princeton University Press.
+
+\end{thebibliography}

@@ -1,0 +1,3 @@
+Why we know that package "dlm" uses Schweppe decomposition:
+
+In the dlm manual, it says that the function dlmMLE calls the function "dlmll," which solely cites the book "Durbin and Koopman, Time series analysis by state space methods, Oxford University Press, 2001." In the book, it says that "Different computer packages have been developed that implement the algorithms considered in this book. SsfPack is an example of one such package" (p. 147). In the manual for SsfPack, it says that it uses the Schweppe Decomposition. Therefore, we know that dlmMLE uses the Schweppe decomposition.
